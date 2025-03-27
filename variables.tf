@@ -18,7 +18,6 @@ variable "source_ocid" {
 variable "ssh_public_key" {
   description = "The public SSH key to use for the k0s cluster"
   type        = string
-  default     = file("~/.ssh/id_rsa.pub")
 }
 
 variable "k0s_config_path" {
