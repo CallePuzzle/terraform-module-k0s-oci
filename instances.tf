@@ -53,7 +53,7 @@ module "instance" {
     block_volume_mgmt       = "DISABLED"
   }
 
-  ssh_public_keys = file("~/.ssh/id_rsa.pub")
+  ssh_public_keys = var.ssh_public_key
   user_data       = filebase64("${path.module}/user-data.sh")
 
   public_ip    = "EPHEMERAL"

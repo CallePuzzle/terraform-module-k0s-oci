@@ -15,6 +15,12 @@ variable "source_ocid" {
   default     = null
 }
 
+variable "ssh_public_key" {
+  description = "The public SSH key to use for the k0s cluster"
+  type        = string
+  default     = file("~/.ssh/id_rsa.pub")
+}
+
 variable "k0s_config_path" {
   description = "The path to the k0s config file"
   type        = string
@@ -65,7 +71,6 @@ variable "projects" {
   }))
   default = []
 }
-
 
 variable "argocd_values" {
   description = "Replace the default ArgoCD values.yaml with this yaml object"
