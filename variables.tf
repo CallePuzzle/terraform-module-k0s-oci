@@ -23,12 +23,19 @@ variable "ssh_public_key" {
 variable "k0s_config_path" {
   description = "The path to the k0s config file"
   type        = string
+  default     = null
 }
 
 variable "k0s_version" {
   description = "The version of k0s to install"
   type        = string
   default     = "1.27.4+k0s.0"
+}
+
+variable "k0s_create_file" {
+  description = "Create the k0s config file"
+  type        = bool
+  default     = true
 }
 
 variable "enable_argocd" {

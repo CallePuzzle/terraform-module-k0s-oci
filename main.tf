@@ -17,6 +17,7 @@ EOF
 }
 
 resource "local_file" "k0sctl" {
+  count    = var.k0s_create_file ? 1 : 0
   filename = var.k0s_config_path
   content  = local.k0s_file_content
 }
