@@ -4,6 +4,22 @@ variable "name" {
   default     = "k0s"
 }
 
+variable "deployment_mode" {
+  description = "Modo de despliegue: 'k0s' para Kubernetes o 'podman' para contenedores"
+  type        = string
+  default     = "k0s"
+  validation {
+    condition     = contains(["k0s", "podman"], var.deployment_mode)
+    error_message = "El modo de despliegue debe ser 'k0s' o 'podman'."
+  }
+}
+
+variable "enable_load_balancer" {
+  description = "Habilitar el load balancer. Por defecto true para k0s, false para podman"
+  type        = bool
+  default     = null
+}
+
 variable "compartment_id" {
   description = "The OCID of the compartment"
   type        = string

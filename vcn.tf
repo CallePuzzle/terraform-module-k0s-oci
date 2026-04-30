@@ -1,7 +1,8 @@
 locals {
   subnet_cidr_block = "10.2.0.0/24"
-  # https://docs.k0sproject.io/v1.23.6+k0s.2/networking/?h=netw#required-ports-and-protocols
-  additional_default_securty_list_ingress_rules = [
+
+  # Reglas comunes para ambos modos
+  common_security_rules = [
     # TCP 	80 HTTP
     {
       protocol = "6"
@@ -20,6 +21,10 @@ locals {
         max = 443
       }
     },
+  ]
+
+  # https://docs.k0sproject.io/v1.23.6+k0s.2/networking/?h=netw#required-ports-and-protocols
+  k0s_security_rules = [
     # TCP 	2380 	etcd peers
     {
       protocol = "6"
@@ -84,6 +89,14 @@ locals {
       }
     },
   ]
+
+  all_security_rules = concat(local.common_security_rules, local.k0s_security_rules)
+  
+  additional_default_securty_list_ingress_rules = slice(
+    local.all_security_rules,
+    0,
+    var.deployment_mode == "k0s" ? length(local.all_security_rules) : length(local.common_security_rules)
+  )
 }
 
 module "vcn" {

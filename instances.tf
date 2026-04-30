@@ -54,7 +54,9 @@ module "instance" {
   }
 
   ssh_public_keys = var.ssh_public_key
-  user_data       = filebase64("${path.module}/user-data.sh")
+  user_data       = base64encode(templatefile("${path.module}/templates/user-data.sh.tmpl", {
+    deployment_mode = var.deployment_mode
+  }))
 
   public_ip    = "EPHEMERAL"
   subnet_ocids = [module.vcn.subnet_id["k0s"]]
@@ -64,6 +66,6 @@ module "instance" {
     module        = "oracle-terraform-modules/compute-instance/oci"
     "component"   = "instance"
     "environment" = "pro"
-    "part_of"     = "k0s"
+    "part_of"     = var.deployment_mode
   }
 }
