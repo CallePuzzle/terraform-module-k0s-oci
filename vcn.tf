@@ -1,8 +1,16 @@
 locals {
   subnet_cidr_block = "10.2.0.0/24"
 
-  # Reglas comunes para ambos modos
-  common_security_rules = [
+  base_security_rules = [
+    # TCP 	22 SSH
+    {
+      protocol = "6"
+      source   = "0.0.0.0/0"
+      tcp_options = {
+        min = 22
+        max = 22
+      }
+    },
     # TCP 	80 HTTP
     {
       protocol = "6"
@@ -90,12 +98,9 @@ locals {
     },
   ]
 
-  all_security_rules = concat(local.common_security_rules, local.k0s_security_rules)
-  
-  additional_default_securty_list_ingress_rules = slice(
-    local.all_security_rules,
-    0,
-    var.deployment_mode == "k0s" ? length(local.all_security_rules) : length(local.common_security_rules)
+  additional_default_securty_list_ingress_rules = concat(
+    local.base_security_rules,
+    [for r in local.k0s_security_rules : r if var.enable_k0s],
   )
 }
 

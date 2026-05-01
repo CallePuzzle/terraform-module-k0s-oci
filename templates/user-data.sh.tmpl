@@ -12,24 +12,12 @@ sudo systemctl disable ufw
 sudo systemctl stop iptables
 sudo systemctl disable iptables
 
-%{ if deployment_mode == "k0s" }
+%{ if enable_k0s }
 # Install kubectl
 snap install kubectl --classic
 
 echo "source <(kubectl completion bash)" | sudo tee -a /root/.bashrc >/dev/null
 echo "export KUBECONFIG=/var/lib/k0s/pki/admin.conf" | sudo tee -a /root/.bashrc >/dev/null
-%{ endif }
-
-%{ if deployment_mode == "podman" }
-# Install podman and podman-compose
-sudo apt install -y podman podman-compose
-
-# Enable podman socket for API access (optional)
-sudo systemctl enable podman.socket
-sudo systemctl start podman.socket
-
-# Add ubuntu user to podman group for rootless containers
-sudo usermod -aG podman ubuntu
 %{ endif }
 
 # Reboot

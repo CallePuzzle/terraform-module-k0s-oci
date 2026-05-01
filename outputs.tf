@@ -7,6 +7,6 @@ output "private_ip" {
 }
 
 output "k0s_file_content" {
-  value     = var.deployment_mode == "k0s" ? local.k0s_file_content : null
+  value     = var.enable_k0s ? local.k0s_file_content : null
   sensitive = false
 }

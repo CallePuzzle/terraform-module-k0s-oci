@@ -1,8 +1,6 @@
 module "lb" {
   source = "./lb"
 
-  count = var.enable_load_balancer != null ? (var.enable_load_balancer ? 1 : 0) : (var.deployment_mode == "k0s" ? 1 : 0)
-
   name = var.name
 
   compartment_id = var.compartment_id

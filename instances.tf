@@ -54,8 +54,8 @@ module "instance" {
   }
 
   ssh_public_keys = var.ssh_public_key
-  user_data       = base64encode(templatefile("${path.module}/templates/user-data.sh.tmpl", {
-    deployment_mode = var.deployment_mode
+  user_data = base64encode(templatefile("${path.module}/templates/user-data.sh.tmpl", {
+    enable_k0s = var.enable_k0s
   }))
 
   public_ip    = "EPHEMERAL"
@@ -66,6 +66,6 @@ module "instance" {
     module        = "oracle-terraform-modules/compute-instance/oci"
     "component"   = "instance"
     "environment" = "pro"
-    "part_of"     = var.deployment_mode
+    "part_of"     = var.enable_k0s ? "k0s" : "plain"
   }
 }
