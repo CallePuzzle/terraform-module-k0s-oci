@@ -1,7 +1,9 @@
 locals {
-  argocd_values = var.argocd_values != {} ? var.argocd_values : templatefile("${path.module}/templates/argocd-values.yaml.tmpl", {
-    argocd_host = var.argocd_host
-  })
+  argocd_values = var.argocd_values != {} ? var.argocd_values : (
+    var.argocd_host != null ? templatefile("${path.module}/templates/argocd-values.yaml.tmpl", {
+      argocd_host = var.argocd_host
+    }) : {}
+  )
   k0s_file_content = var.enable_k0s ? templatefile("${path.module}/templates/k0sctl.yaml.tmpl", {
     private_ip         = module.instance["controllerworker"].private_ip[0]
     public_ip          = module.instance["controllerworker"].public_ip[0]
