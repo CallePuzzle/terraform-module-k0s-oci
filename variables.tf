@@ -88,3 +88,14 @@ variable "argocd_values" {
   description = "Replace the default ArgoCD values.yaml with this yaml object"
   default     = {}
 }
+
+variable "additional_security_list_rules" {
+  description = "Additional ingress rules for the default security list"
+  type = list(object({
+    protocol    = string
+    source      = string
+    tcp_options = optional(map(number), null)
+    udp_options = optional(map(number), null)
+  }))
+  default = []
+}

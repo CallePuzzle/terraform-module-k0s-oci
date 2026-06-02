@@ -101,6 +101,7 @@ locals {
   additional_default_securty_list_ingress_rules = concat(
     local.base_security_rules,
     [for r in local.k0s_security_rules : r if var.enable_k0s],
+    var.additional_security_list_rules,
   )
 }
 
