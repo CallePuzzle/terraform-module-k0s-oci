@@ -85,8 +85,8 @@ variable "argocd_host" {
   default     = null
 
   validation {
-    condition     = var.enable_argocd && var.argocd_values == {} ? var.argocd_host != null && var.argocd_host != "" : true
-    error_message = "argocd_host is required when enable_argocd=true and argocd_values is empty. Either set argocd_host or provide a custom argocd_values object."
+    condition     = var.enable_k0s && var.enable_argocd && var.argocd_values == {} ? var.argocd_host != null && var.argocd_host != "" : true
+    error_message = "argocd_host is required when enable_k0s=true, enable_argocd=true and argocd_values is empty. Either set argocd_host or provide a custom argocd_values object."
   }
 }
 

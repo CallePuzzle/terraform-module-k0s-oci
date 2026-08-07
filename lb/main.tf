@@ -23,8 +23,6 @@ resource "oci_load_balancer_load_balancer" "this" {
 }
 
 resource "oci_load_balancer_backend_set" "https" {
-  count = local.has_certificate ? 1 : 0
-
   load_balancer_id = oci_load_balancer_load_balancer.this.id
   name             = "${var.name}-backend-set-https"
   policy           = "ROUND_ROBIN"
@@ -51,9 +49,7 @@ resource "oci_load_balancer_backend_set" "http" {
 }
 
 resource "oci_load_balancer_backend" "https" {
-  count = local.has_certificate ? 1 : 0
-
-  backendset_name  = oci_load_balancer_backend_set.https[count.index].name
+  backendset_name  = oci_load_balancer_backend_set.https.name
   ip_address       = var.backend_ip_address
   load_balancer_id = oci_load_balancer_load_balancer.this.id
   port             = 443
@@ -77,17 +73,18 @@ resource "oci_load_balancer_certificate" "this" {
 }
 
 resource "oci_load_balancer_listener" "https" {
-  count = local.has_certificate ? 1 : 0
-
-  default_backend_set_name = oci_load_balancer_backend_set.https[count.index].name
+  default_backend_set_name = oci_load_balancer_backend_set.https.name
   load_balancer_id         = oci_load_balancer_load_balancer.this.id
   name                     = "${var.name}-listener-https"
   port                     = 443
   protocol                 = "TCP"
 
-  ssl_configuration {
-    certificate_name        = oci_load_balancer_certificate.this[count.index].certificate_name
-    verify_peer_certificate = false
+  dynamic "ssl_configuration" {
+    for_each = local.has_certificate ? [1] : []
+    content {
+      certificate_name        = oci_load_balancer_certificate.this[0].certificate_name
+      verify_peer_certificate = false
+    }
   }
 }
 
