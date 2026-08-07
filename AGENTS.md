@@ -75,7 +75,7 @@ The module provisions:
 
 ### Compute Configuration
 - **Shape**: VM.Standard.A1.Flex (ARM-based, Always Free eligible)
-- **Resources**: 4 OCPUs, 24 GB RAM
+- **Resources**: 2 OCPUs, 12 GB RAM
 - **Boot Volume**: 200 GB
 - **OS**: Canonical Ubuntu 24.04
 - **Role**: Combined controller+worker node

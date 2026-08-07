@@ -15,8 +15,8 @@ locals {
       instance_count              = 1
       instance_display_name       = "${var.name}-controller-worker"
       shape                       = "VM.Standard.A1.Flex"
-      instance_flex_memory_in_gbs = 24
-      instance_flex_ocpus         = 4
+      instance_flex_memory_in_gbs = 12
+      instance_flex_ocpus         = 2
       boot_volume_size_in_gbs     = 200
     }
   }
