@@ -22,6 +22,8 @@ resource "oci_core_network_security_group_security_rule" "http" {
 }
 
 resource "oci_core_network_security_group_security_rule" "https" {
+  count = local.has_certificate ? 1 : 0
+
   network_security_group_id = oci_core_network_security_group.this.id
   description               = "Allow https access from public load balancer"
   direction                 = "INGRESS"

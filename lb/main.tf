@@ -1,3 +1,7 @@
+locals {
+  has_certificate = var.certificate != null ? var.certificate.public_certificate != null : var.certificate_public_certificate != null
+}
+
 data "oci_load_balancer_shapes" "this" {
   compartment_id = var.compartment_id
 }
@@ -19,6 +23,8 @@ resource "oci_load_balancer_load_balancer" "this" {
 }
 
 resource "oci_load_balancer_backend_set" "https" {
+  count = local.has_certificate ? 1 : 0
+
   load_balancer_id = oci_load_balancer_load_balancer.this.id
   name             = "${var.name}-backend-set-https"
   policy           = "ROUND_ROBIN"
@@ -45,7 +51,9 @@ resource "oci_load_balancer_backend_set" "http" {
 }
 
 resource "oci_load_balancer_backend" "https" {
-  backendset_name  = oci_load_balancer_backend_set.https.name
+  count = local.has_certificate ? 1 : 0
+
+  backendset_name  = oci_load_balancer_backend_set.https[count.index].name
   ip_address       = var.backend_ip_address
   load_balancer_id = oci_load_balancer_load_balancer.this.id
   port             = 443
@@ -58,12 +66,29 @@ resource "oci_load_balancer_backend" "http" {
   port             = 80
 }
 
+resource "oci_load_balancer_certificate" "this" {
+  count = local.has_certificate ? 1 : 0
+
+  load_balancer_id   = oci_load_balancer_load_balancer.this.id
+  certificate_name   = var.certificate != null ? var.certificate.name : var.certificate_certificate_name
+  public_certificate = var.certificate != null ? var.certificate.public_certificate : var.certificate_public_certificate
+  private_key        = var.certificate != null ? var.certificate.private_key : var.certificate_private_key
+  ca_certificate     = var.certificate != null ? var.certificate.ca_certificate : var.certificate_ca_certificate
+}
+
 resource "oci_load_balancer_listener" "https" {
-  default_backend_set_name = oci_load_balancer_backend_set.https.name
+  count = local.has_certificate ? 1 : 0
+
+  default_backend_set_name = oci_load_balancer_backend_set.https[count.index].name
   load_balancer_id         = oci_load_balancer_load_balancer.this.id
   name                     = "${var.name}-listener-https"
   port                     = 443
   protocol                 = "TCP"
+
+  ssl_configuration {
+    certificate_name        = oci_load_balancer_certificate.this[count.index].certificate_name
+    verify_peer_certificate = false
+  }
 }
 
 resource "oci_load_balancer_listener" "http" {

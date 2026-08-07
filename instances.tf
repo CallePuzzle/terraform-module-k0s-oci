@@ -8,6 +8,8 @@ data "oci_core_images" "this" {
 }
 
 locals {
+  controller_key = "controllerworker"
+
   instances = {
     controllerworker = {
       instance_count              = 1
@@ -56,6 +58,7 @@ module "instance" {
   ssh_public_keys = var.ssh_public_key
   user_data = base64encode(templatefile("${path.module}/templates/user-data.sh.tmpl", {
     enable_k0s = var.enable_k0s
+    ssh_user   = var.ssh_user
   }))
 
   public_ip    = "EPHEMERAL"
@@ -65,7 +68,7 @@ module "instance" {
     managed_by    = "terraform"
     module        = "oracle-terraform-modules/compute-instance/oci"
     "component"   = "instance"
-    "environment" = "pro"
+    "environment" = var.environment
     "part_of"     = var.enable_k0s ? "k0s" : "plain"
   }
 }

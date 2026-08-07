@@ -23,3 +23,43 @@ variable "backend_ip_address" {
   type        = string
   description = "The IP address of the backend"
 }
+
+variable "certificate" {
+  type = object({
+    name               = string
+    public_certificate = string
+    private_key        = string
+    ca_certificate     = optional(string)
+  })
+  description = "Certificate configuration for the load balancer"
+  sensitive   = true
+  default     = null
+}
+
+# DEPRECATED: use `certificate` object
+variable "certificate_certificate_name" {
+  type        = string
+  description = "DEPRECATED: use `certificate` object"
+  default     = null
+}
+
+variable "certificate_public_certificate" {
+  type        = string
+  description = "DEPRECATED: use `certificate` object"
+  default     = null
+  sensitive   = true
+}
+
+variable "certificate_private_key" {
+  type        = string
+  description = "DEPRECATED: use `certificate` object"
+  default     = null
+  sensitive   = true
+}
+
+variable "certificate_ca_certificate" {
+  type        = string
+  description = "DEPRECATED: use `certificate` object"
+  default     = null
+  sensitive   = true
+}

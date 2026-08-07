@@ -6,7 +6,7 @@ spec:
   hosts:
   - ssh:
       address: ${public_ip}
-      user: ubuntu
+      user: ${ssh_user}
       port: 22
       keyPath: null
     role: controller+worker
@@ -41,7 +41,7 @@ spec:
             %{ if enable_nginx }
             - name: nginx-ingress
               chartname: ingress-nginx/ingress-nginx
-              version: "4.12.3"
+              version: "4.12.0"
               namespace: ingress-nginx
               order: 1
               values: |
@@ -55,7 +55,7 @@ spec:
             %{ if enable_argocd }
             - name: argo-cd
               chartname: argo/argo-cd
-              version: "8.1.1"
+              version: "7.0.0"
               namespace: argocd
               order: 2
               values: |
@@ -64,7 +64,7 @@ spec:
             %{ if enable_argocd && enable_argocd_apps }
             - name: argocd-apps
               chartname: argo/argocd-apps
-              version: "2.0.2"
+              version: "2.0.0"
               namespace: argocd
               order: 3
               values: |

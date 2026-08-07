@@ -1,16 +1,17 @@
 #! /bin/sh
+set -eu
 
 # This script is used to initialize the instance.
 
-# Upgrade
-sudo apt update
-sudo apt upgrade -y
+# Upgrade (fast path; no full upgrade to keep boot under ~4 min)
+sudo apt-get update
+sudo apt-get -y --no-install-recommends upgrade
 
-# Disable ufw and iptables
-sudo systemctl stop ufw
-sudo systemctl disable ufw
-sudo systemctl stop iptables
-sudo systemctl disable iptables
+# Disable ufw and iptables (best effort; ufw may not exist on minimal images)
+sudo systemctl stop ufw 2>/dev/null || true
+sudo systemctl disable ufw 2>/dev/null || true
+sudo systemctl stop iptables 2>/dev/null || true
+sudo systemctl disable iptables 2>/dev/null || true
 
 %{ if enable_k0s }
 # Install kubectl
@@ -20,5 +21,5 @@ echo "source <(kubectl completion bash)" | sudo tee -a /root/.bashrc >/dev/null
 echo "export KUBECONFIG=/var/lib/k0s/pki/admin.conf" | sudo tee -a /root/.bashrc >/dev/null
 %{ endif }
 
-# Reboot
+# Consider removing for faster boot
 sudo reboot

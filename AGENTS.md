@@ -24,7 +24,7 @@ The module provisions:
 - `hashicorp/local` (for generating k0sctl configuration file)
 
 ### Key Technologies
-- **K0s**: Lightweight Kubernetes distribution (default: v1.27.4+k0s.0)
+- **K0s**: Lightweight Kubernetes distribution (default: v1.30.4+k0s.0)
 - **Ubuntu 24.04**: Base operating system for compute instances
 - **ArgoCD**: Optional GitOps continuous delivery tool (default: enabled)
 - **NGINX Ingress**: Optional ingress controller (default: enabled)
@@ -145,7 +145,7 @@ k0sctl apply --disable-telemetry --config k0sctl.yaml
 |----------|-------------|---------|
 | `compartment_id` | OCI compartment OCID (required) | - |
 | `ssh_public_key` | Public SSH key for instance access | - |
-| `k0s_version` | K0s version to install | "1.27.4+k0s.0" |
+| `k0s_version` | K0s version to install | "1.30.4+k0s.0" |
 | `k0s_config_path` | Path to generate k0sctl.yaml | null |
 | `enable_argocd` | Deploy ArgoCD | true |
 | `enable_nginx` | Deploy NGINX Ingress | true |
@@ -292,3 +292,9 @@ The following files are gitignored:
 This project is licensed under the **GNU General Public License v3.0**.
 
 The VCN submodule contains code derived from [oracle-terraform-modules/terraform-oci-vcn](https://github.com/oracle-terraform-modules/terraform-oci-vcn), licensed under the Universal Permissive License 1.0.
+
+## CodeGraph (opencode AI)
+
+This project is indexed by CodeGraph. Use `codegraph_context` / `codegraph_search`
+instead of grep when looking up symbols, signatures, callers or impact.
+Do not commit `opencode.jsonc` (it contains a local absolute path).

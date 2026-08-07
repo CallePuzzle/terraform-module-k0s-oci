@@ -1,12 +1,16 @@
 locals {
+  # Validate required variables
+  _validate_compartment_id = var.compartment_id != null && var.compartment_id != "" ? true : error("compartment_id is required")
+  _validate_k0s_version    = var.k0s_version != null && var.k0s_version != "" ? true : error("k0s_version is required")
+
   argocd_values = var.argocd_values != {} ? var.argocd_values : (
     var.argocd_host != null ? templatefile("${path.module}/templates/argocd-values.yaml.tmpl", {
       argocd_host = var.argocd_host
     }) : {}
   )
   k0s_file_content = var.enable_k0s ? templatefile("${path.module}/templates/k0sctl.yaml.tmpl", {
-    private_ip         = module.instance["controllerworker"].private_ip[0]
-    public_ip          = module.instance["controllerworker"].public_ip[0]
+    private_ip         = module.instance[local.controller_key].private_ip[0]
+    public_ip          = module.instance[local.controller_key].public_ip[0]
     k0s_version        = var.k0s_version
     projects           = var.projects
     enable_argocd      = var.enable_argocd
@@ -15,6 +19,7 @@ locals {
     argocd_values      = <<EOF
 ${local.argocd_values}
 EOF
+    ssh_user           = var.ssh_user
   }) : null
 }
 
