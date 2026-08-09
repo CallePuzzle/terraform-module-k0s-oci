@@ -5,7 +5,7 @@ module "lb" {
 
   compartment_id = var.compartment_id
   vcn_id         = module.vcn.vcn_id
-  subnet_ids     = [module.vcn.subnet_id["k0s"]]
+  subnet_ids     = [module.vcn.subnet_id[var.name]]
 
   backend_ip_address = module.instance[local.controller_key].private_ip[0]
 

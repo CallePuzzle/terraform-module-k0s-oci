@@ -62,7 +62,7 @@ module "instance" {
   }))
 
   public_ip    = "EPHEMERAL"
-  subnet_ocids = [module.vcn.subnet_id["k0s"]]
+  subnet_ocids = [module.vcn.subnet_id[var.name]]
 
   freeform_tags = {
     managed_by    = "terraform"
