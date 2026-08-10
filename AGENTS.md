@@ -150,6 +150,7 @@ k0sctl apply --disable-telemetry --config k0sctl.yaml
 | `enable_argocd` | Deploy ArgoCD | true |
 | `enable_nginx` | Deploy NGINX Ingress | true |
 | `enable_argocd_apps` | Deploy ArgoCD Apps | true |
+| `enable_openebs` | Deploy OpenEBS local storage via extensions.helm | false |
 | `projects` | List of ArgoCD projects | [] |
 | `argocd_values` | Custom ArgoCD Helm values | {} |
 | `argocd_host` | ArgoCD ingress hostname | null |

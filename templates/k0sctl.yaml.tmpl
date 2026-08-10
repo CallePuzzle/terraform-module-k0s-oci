@@ -23,10 +23,8 @@ spec:
       spec:
         telemetry:
           enabled: false
-        %{ if enable_argocd || enable_nginx }
+        %{ if enable_argocd || enable_nginx || enable_openebs }
         extensions:
-          storage:
-            type: openebs_local_storage
           helm:
             repositories:
             %{ if enable_argocd }
@@ -37,7 +35,32 @@ spec:
             - name: ingress-nginx
               url: https://kubernetes.github.io/ingress-nginx
             %{ endif }
+            %{ if enable_openebs }
+            - name: openebs-internal
+              url: https://openebs.github.io/openebs
+            %{ endif }
             charts:
+            %{ if enable_openebs }
+            - name: openebs
+              chartname: openebs-internal/openebs
+              version: "4.4.0"
+              namespace: openebs
+              order: 0
+              values: |
+                engines:
+                  replicated:
+                    mayastor:
+                      enabled: false
+                lvm-localpv:
+                  lvmNode:
+                    kubeletDir: /var/lib/k0s/kubelet
+                zfs-localpv:
+                  zfsNode:
+                    kubeletDir: /var/lib/k0s/kubelet
+                localpv-provisioner:
+                  hostpathClass:
+                    isDefaultClass: false
+            %{ endif }
             %{ if enable_nginx }
             - name: nginx-ingress
               chartname: ingress-nginx/ingress-nginx

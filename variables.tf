@@ -79,6 +79,12 @@ variable "enable_argocd_apps" {
   default     = true
 }
 
+variable "enable_openebs" {
+  description = "Deploy OpenEBS local storage via the extensions.helm chart (https://docs.k0sproject.io/head/examples/openebs/). Replaces the deprecated no-op extensions.storage.type field."
+  type        = bool
+  default     = false
+}
+
 variable "argocd_host" {
   description = "The hostname of the ArgoCD server. Required when enable_argocd=true and argocd_values is left empty (default), because the default values deploy an ingress that needs a host."
   type        = string
