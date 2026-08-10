@@ -83,6 +83,7 @@ resource "oci_load_balancer_listener" "https" {
     for_each = local.has_certificate ? [1] : []
     content {
       certificate_name        = oci_load_balancer_certificate.this[0].certificate_name
+      verify_depth            = 5
       verify_peer_certificate = false
     }
   }
