@@ -8,7 +8,7 @@ spec:
       address: ${public_ip}
       user: ${ssh_user}
       port: 22
-      keyPath: null
+      keyPath: ${ssh_private_key_path != null ? ssh_private_key_path : "null"}
     role: controller+worker
     noTaints: true
     privateAddress: ${private_ip}

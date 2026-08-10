@@ -38,6 +38,12 @@ variable "ssh_user" {
   default     = "ubuntu"
 }
 
+variable "ssh_private_key_path" {
+  description = "Path to the private key k0sctl should use to SSH into the instances. Null lets k0sctl fall back to the SSH agent / default identity files."
+  type        = string
+  default     = null
+}
+
 variable "k0s_config_path" {
   description = "The path to the k0s config file"
   type        = string

@@ -9,18 +9,19 @@ locals {
     }) : {}
   )
   k0s_file_content = var.enable_k0s ? templatefile("${path.module}/templates/k0sctl.yaml.tmpl", {
-    private_ip         = module.instance[local.controller_key].private_ip[0]
-    public_ip          = module.instance[local.controller_key].public_ip[0]
-    k0s_version        = var.k0s_version
-    projects           = var.projects
-    enable_argocd      = var.enable_argocd
-    enable_argocd_apps = var.enable_argocd_apps
-    enable_nginx       = var.enable_nginx
-    enable_openebs     = var.enable_openebs
-    argocd_values      = <<EOF
+    private_ip           = module.instance[local.controller_key].private_ip[0]
+    public_ip            = module.instance[local.controller_key].public_ip[0]
+    k0s_version          = var.k0s_version
+    projects             = var.projects
+    enable_argocd        = var.enable_argocd
+    enable_argocd_apps   = var.enable_argocd_apps
+    enable_nginx         = var.enable_nginx
+    enable_openebs       = var.enable_openebs
+    argocd_values        = <<EOF
 ${local.argocd_values}
 EOF
-    ssh_user           = var.ssh_user
+    ssh_user             = var.ssh_user
+    ssh_private_key_path = var.ssh_private_key_path
   }) : null
 }
 
