@@ -115,6 +115,7 @@ variable "projects" {
     destination_namespace = string
     auto_sync             = optional(bool, true)
     environment           = optional(string, null)
+    source_repos          = optional(list(string), [])
   }))
   default = []
 }

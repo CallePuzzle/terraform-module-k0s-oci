@@ -128,11 +128,17 @@ spec:
                     description: Project for ${project.name}
                     sourceRepos:
                     - '${project.source.repo_url}'
+                    %{for repo in project.source_repos~}
+                    - '${repo}'
+                    %{endfor~}
                     destinations:
                     - namespace: argocd
                       server: https://kubernetes.default.svc
                     - namespace: ${project.destination_namespace}
                       server: https://kubernetes.default.svc
+                    clusterResourceWhitelist:
+                    - group: ''
+                      kind: Namespace
                   %{endfor~}%{endif~}
 
             %{ endif }
