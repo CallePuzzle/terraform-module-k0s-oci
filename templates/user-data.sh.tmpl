@@ -3,9 +3,46 @@ set -eu
 
 # This script is used to initialize the instance.
 
+# Wait for outbound connectivity. On OCI the VNIC may come up slightly
+# before the route table / internet gateway are fully usable, which makes
+# apt-get and snap fail immediately.
+wait_for_network() {
+  url="http://ports.ubuntu.com/ubuntu-ports/dists/noble/InRelease"
+  i=0
+  while [ "$i" -lt 60 ]; do
+    if curl -fsS --max-time 5 "$url" >/dev/null 2>&1; then
+      return 0
+    fi
+    i=$((i + 1))
+    echo "Waiting for outbound network connectivity... attempt $i/60"
+    sleep 5
+  done
+  echo "ERROR: outbound network connectivity not available after 5 minutes" >&2
+  return 1
+}
+wait_for_network
+
 # Upgrade (fast path; no full upgrade to keep boot under ~4 min)
-sudo apt-get update
-sudo apt-get -y --no-install-recommends upgrade
+# Retry apt a few times because the OCI package mirrors can be flaky right
+# after boot.
+retry() {
+  max_attempts="$1"
+  shift
+  i=0
+  while [ "$i" -lt "$max_attempts" ]; do
+    if "$@"; then
+      return 0
+    fi
+    i=$((i + 1))
+    echo "Command failed, retrying in 10s... ($i/$max_attempts)"
+    sleep 10
+  done
+  echo "ERROR: command failed after $max_attempts attempts: $*" >&2
+  return 1
+}
+
+retry 5 sudo apt-get update
+retry 5 sudo apt-get -y --no-install-recommends upgrade
 
 # Disable ufw and iptables (best effort; ufw may not exist on minimal images)
 sudo systemctl stop ufw 2>/dev/null || true
@@ -15,7 +52,7 @@ sudo systemctl disable iptables 2>/dev/null || true
 
 %{ if enable_k0s }
 # Install kubectl
-snap install kubectl --classic
+retry 5 sudo snap install kubectl --classic
 
 echo "source <(kubectl completion bash)" | sudo tee -a /root/.bashrc >/dev/null
 echo "export KUBECONFIG=/var/lib/k0s/pki/admin.conf" | sudo tee -a /root/.bashrc >/dev/null

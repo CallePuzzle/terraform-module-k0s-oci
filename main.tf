@@ -15,7 +15,7 @@ locals {
     projects             = var.projects
     enable_argocd        = var.enable_argocd
     enable_argocd_apps   = var.enable_argocd_apps
-    enable_nginx         = var.enable_nginx
+    enable_traefik       = var.enable_traefik
     enable_openebs       = var.enable_openebs
     argocd_values        = <<EOF
 ${local.argocd_values}

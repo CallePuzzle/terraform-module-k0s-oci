@@ -73,8 +73,8 @@ variable "enable_argocd" {
   default     = true
 }
 
-variable "enable_nginx" {
-  description = "Enable nginx"
+variable "enable_traefik" {
+  description = "Enable Traefik (ingress controller)"
   type        = bool
   default     = true
 }

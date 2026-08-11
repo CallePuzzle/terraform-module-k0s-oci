@@ -10,7 +10,7 @@ The module provisions:
 - An optional load balancer for external traffic
 - K0s cluster configuration via `k0sctl`
 - Optional ArgoCD for GitOps deployment management
-- Optional NGINX Ingress Controller
+- Optional Traefik Ingress Controller
 
 ## Technology Stack
 
@@ -27,7 +27,7 @@ The module provisions:
 - **K0s**: Lightweight Kubernetes distribution (default: v1.30.4+k0s.0)
 - **Ubuntu 24.04**: Base operating system for compute instances
 - **ArgoCD**: Optional GitOps continuous delivery tool (default: enabled)
-- **NGINX Ingress**: Optional ingress controller (default: enabled)
+- **Traefik**: Optional ingress controller (default: enabled)
 
 ## Project Structure
 
@@ -148,7 +148,7 @@ k0sctl apply --disable-telemetry --config k0sctl.yaml
 | `k0s_version` | K0s version to install | "1.30.4+k0s.0" |
 | `k0s_config_path` | Path to generate k0sctl.yaml | null |
 | `enable_argocd` | Deploy ArgoCD | true |
-| `enable_nginx` | Deploy NGINX Ingress | true |
+| `enable_traefik` | Deploy Traefik (ingress controller) | true |
 | `enable_argocd_apps` | Deploy ArgoCD Apps | true |
 | `enable_openebs` | Deploy OpenEBS local storage via extensions.helm | false |
 | `projects` | List of ArgoCD projects | [] |
@@ -285,7 +285,7 @@ The following files are gitignored:
 
 3. **ArgoCD ingress not working**
    - Verify `argocd_host` is set correctly
-   - Check NGINX ingress controller is running
+   - Check Traefik ingress controller is running
    - Ensure load balancer is in healthy state
 
 ## License
