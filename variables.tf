@@ -53,7 +53,7 @@ variable "k0s_config_path" {
 variable "k0s_version" {
   description = "The version of k0s to install"
   type        = string
-  default     = "1.30.4+k0s.0"
+  default     = "1.36.3+k0s.1"
 
   validation {
     condition     = can(regex("^\\d+\\.\\d+\\.\\d+\\+k0s\\.\\d+$", var.k0s_version))

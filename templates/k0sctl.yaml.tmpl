@@ -43,7 +43,7 @@ spec:
             %{ if enable_openebs }
             - name: openebs
               chartname: openebs-internal/openebs
-              version: "4.4.0"
+              version: "4.5.1"
               namespace: openebs
               order: 0
               values: |
@@ -82,7 +82,7 @@ spec:
             %{ if enable_argocd }
             - name: argo-cd
               chartname: argo/argo-cd
-              version: "7.0.0"
+              version: "10.3.2"
               namespace: argocd
               order: 2
               values: |
@@ -91,7 +91,7 @@ spec:
             %{ if enable_argocd && enable_argocd_apps }
             - name: argocd-apps
               chartname: argo/argocd-apps
-              version: "2.0.0"
+              version: "2.0.5"
               namespace: argocd
               order: 3
               values: |

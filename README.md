@@ -79,6 +79,26 @@ sudo su -
 kubectl get pods -A
 ```
 
+## Verify cloud-init execution
+
+The `user-data.sh` script is run by cloud-init during the first boot of the
+instance. To confirm that it finished successfully, SSH into the instance and
+check the cloud-init status and logs:
+
+```bash
+ssh ubuntu@<public_ip>
+sudo cloud-init status --wait    # blocks until cloud-init finishes
+sudo tail -f /var/log/cloud-init-output.log
+```
+
+- `cloud-init status` reports the current state (`running`, `done`, `error`,
+  etc.). Use `--wait` so the command blocks until completion, which is useful
+  when run from automation.
+- `/var/log/cloud-init-output.log` contains the combined stdout/stderr of every
+  module executed by cloud-init, including the `user-data.sh` script. Look for
+  any `ERROR`, `Traceback`, or non-zero exit lines, and confirm the script
+  reached its final `k0s install ...` step.
+
 ## Connect to ArgoCD
 
 ```bash
