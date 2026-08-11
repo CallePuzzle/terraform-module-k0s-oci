@@ -107,6 +107,9 @@ spec:
                       %{if project.source.plugin != ""}
                       plugin:
                         name: ${project.source.plugin}
+                        env:
+                          - name: ENVIRONMENT
+                            value: %{if project.environment != null~}${project.environment}%{else}${environment}%{endif}
                       %{endif}
                     destination:
                       server: https://kubernetes.default.svc

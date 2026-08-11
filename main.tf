@@ -22,6 +22,7 @@ ${local.argocd_values}
 EOF
     ssh_user             = var.ssh_user
     ssh_private_key_path = var.ssh_private_key_path
+    environment          = var.environment
   }) : null
 }
 
