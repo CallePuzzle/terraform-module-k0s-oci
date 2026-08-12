@@ -72,11 +72,16 @@ spec:
                   name: nginx
                 providers:
                   kubernetesIngress:
-                    # Must stay enabled: Argo CD's Ingress health check requires
-                    # status.loadBalancer.ingress to be set, and Traefik only
-                    # writes it when publishedService is enabled.
+                    # Argo CD's Ingress health check requires
+                    # status.loadBalancer.ingress to be set. Publish the node
+                    # IP statically: the chart auto-enables publishedService
+                    # for type=LoadBalancer services, and that mode takes
+                    # precedence but reads the Service's LB status, which
+                    # stays empty forever in k0s (no cloud LB controller).
                     publishedService:
-                      enabled: true
+                      enabled: false
+                    ingressEndpoint:
+                      ip: ${private_ip}
                 service:
                   spec:
                     externalIPs:
