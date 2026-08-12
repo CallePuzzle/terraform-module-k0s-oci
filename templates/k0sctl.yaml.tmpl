@@ -72,8 +72,11 @@ spec:
                   name: nginx
                 providers:
                   kubernetesIngress:
+                    # Must stay enabled: Argo CD's Ingress health check requires
+                    # status.loadBalancer.ingress to be set, and Traefik only
+                    # writes it when publishedService is enabled.
                     publishedService:
-                      enabled: false
+                      enabled: true
                 service:
                   spec:
                     externalIPs:
@@ -126,11 +129,7 @@ spec:
                   ${project.name}:
                     namespace: argocd
                     description: Project for ${project.name}
-                    sourceRepos:
-                    - '${project.source.repo_url}'
-                    %{for repo in project.source_repos~}
-                    - '${repo}'
-                    %{endfor~}
+                    sourceRepos: ${jsonencode(concat([project.source.repo_url], project.source_repos))}
                     destinations:
                     - namespace: argocd
                       server: https://kubernetes.default.svc
