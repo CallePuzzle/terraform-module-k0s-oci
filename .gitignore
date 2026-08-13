@@ -19,6 +19,9 @@ terraform.rc
 provider-vars.profile
 private_key.pem
 
+# Editor / AI tool local config (machine-specific paths)
+opencode.jsonc
+
 # k0s
 test/k0sctl.yaml
 test/kubeconfig

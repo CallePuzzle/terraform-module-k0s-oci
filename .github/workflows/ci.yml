@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: terraform fmt + validate + tflint + tfsec
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.x
+
+      - name: terraform fmt
+        run: terraform fmt -check -recursive
+
+      - name: terraform init (root)
+        run: terraform init -backend=false
+
+      - name: terraform validate (root)
+        run: terraform validate -no-color
+
+      - name: terraform init (lb)
+        working-directory: lb
+        run: terraform init -backend=false
+
+      - name: terraform validate (lb)
+        working-directory: lb
+        run: terraform validate -no-color
+
+      - name: tflint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: latest
+      - run: tflint --recursive --minimum-failure-severity=error
+
+      - name: tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          soft_fail: false
+          working_directory: .

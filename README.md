@@ -21,6 +21,13 @@ export TF_VAR_private_key_path=./private_key.pem
 export TF_VAR_region=eu-marseille-1
 ```
 
+### Required variables
+
+| Variable | Description |
+|----------|-------------|
+| `compartment_id` | OCI compartment OCID in which to create all resources. |
+| `ssh_public_key` | Public SSH key for instance access (e.g. `file("~/.ssh/id_rsa.pub")`). The default user is `ubuntu` (configurable via `ssh_user`). |
+
 Configure the module, see an example in [test/main.tf](test/main.tf)
 
 ```terraform
@@ -30,7 +37,8 @@ provider "oci" {
 module "oci-k0s" {
   source = "../"
 
-  compartment_id  = "ocid1.tenancy.oc1..aaaaaaaa5ii3uidynoqhjub5ub66fm3ryn2my6txw6xrguihckyr2uyarlkq"
+  compartment_id  = "ocid1.tenancy.oc1..XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  ssh_public_key  = file("~/.ssh/id_rsa.pub")
   k0s_config_path = "${path.root}/k0sctl.yaml"
 }
 ```
@@ -43,15 +51,53 @@ terraform apply # the second apply is required to get the public IP of the insta
 k0sctl apply --disable-telemetry --config k0sctl.yaml
 ```
 
+### Network security
+
+By default, the cluster provisions with the following wide-open rules:
+
+- TCP 22 (SSH) from `0.0.0.0/0`
+- TCP 6443 (Kubernetes API) from `0.0.0.0/0`
+
+These defaults are convenient for Always Free cloud-shell testing. For any
+non-toy deployment, restrict them via:
+
+```hcl
+module "oci-k0s" {
+  # ...
+  ssh_allowed_cidrs = ["203.0.113.0/24"]   # your office / VPN
+  api_allowed_cidrs = ["203.0.113.0/24"]
+}
+```
+
 ## Connect to Kubernetes API
 
-[https://docs.k0sproject.io/v1.27.1+k0s.0/FAQ/?h=kubeconfig#how-do-i-connect-to-the-cluster](https://docs.k0sproject.io/v1.27.1+k0s.0/FAQ/?h=kubeconfig#how-do-i-connect-to-the-cluster)
+[https://docs.k0sproject.io/v1.30.4+k0s.0/FAQ/?h=kubeconfig#how-do-i-connect-to-the-cluster](https://docs.k0sproject.io/v1.30.4+k0s.0/FAQ/?h=kubeconfig#how-do-i-connect-to-the-cluster)
 
 ```bash
 ssh ubuntu@<public_ip>
 sudo su -
 kubectl get pods -A
 ```
+
+## Verify cloud-init execution
+
+The `user-data.sh` script is run by cloud-init during the first boot of the
+instance. To confirm that it finished successfully, SSH into the instance and
+check the cloud-init status and logs:
+
+```bash
+ssh ubuntu@<public_ip>
+sudo cloud-init status --wait    # blocks until cloud-init finishes
+sudo tail -f /var/log/cloud-init-output.log
+```
+
+- `cloud-init status` reports the current state (`running`, `done`, `error`,
+  etc.). Use `--wait` so the command blocks until completion, which is useful
+  when run from automation.
+- `/var/log/cloud-init-output.log` contains the combined stdout/stderr of every
+  module executed by cloud-init, including the `user-data.sh` script. Look for
+  any `ERROR`, `Traceback`, or non-zero exit lines, and confirm the script
+  reached its final `k0s install ...` step.
 
 ## Connect to ArgoCD
 
