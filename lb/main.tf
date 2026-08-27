@@ -29,7 +29,7 @@ resource "oci_load_balancer_backend_set" "https" {
 
   health_checker {
     protocol          = "TCP"
-    port              = 443
+    port              = 80
     retries           = 3
     timeout_in_millis = 3000
   }
@@ -52,7 +52,7 @@ resource "oci_load_balancer_backend" "https" {
   backendset_name  = oci_load_balancer_backend_set.https.name
   ip_address       = var.backend_ip_address
   load_balancer_id = oci_load_balancer_load_balancer.this.id
-  port             = 443
+  port             = 80
 }
 
 resource "oci_load_balancer_backend" "http" {
