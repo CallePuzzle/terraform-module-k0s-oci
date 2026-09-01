@@ -195,6 +195,8 @@ projects = [
     }
     destination_namespace = "default"
     auto_sync = true
+    # Optional: extra namespaces allowed in the AppProject destinations
+    extra_destination_namespaces = ["cnpg-system"]
   }
 ]
 ```

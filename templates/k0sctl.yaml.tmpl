@@ -140,6 +140,10 @@ spec:
                       server: https://kubernetes.default.svc
                     - namespace: ${project.destination_namespace}
                       server: https://kubernetes.default.svc
+                    %{~ for ns in project.extra_destination_namespaces }
+                    - namespace: ${ns}
+                      server: https://kubernetes.default.svc
+                    %{~ endfor }
                     clusterResourceWhitelist:
                     - group: ''
                       kind: Namespace
