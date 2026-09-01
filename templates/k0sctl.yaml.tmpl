@@ -147,6 +147,10 @@ spec:
                     clusterResourceWhitelist:
                     - group: ''
                       kind: Namespace
+                    %{~ for rule in project.extra_cluster_resource_whitelist }
+                    - group: ${rule.group}
+                      kind: ${rule.kind}
+                    %{~ endfor }
                   %{endfor~}%{endif~}
 
             %{ endif }

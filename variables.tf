@@ -117,6 +117,10 @@ variable "projects" {
     environment                  = optional(string, null)
     source_repos                 = optional(list(string), [])
     extra_destination_namespaces = optional(list(string), [])
+    extra_cluster_resource_whitelist = optional(list(object({
+      group = string
+      kind  = string
+    })), [])
   }))
   default = []
 }

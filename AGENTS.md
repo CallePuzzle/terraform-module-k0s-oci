@@ -197,6 +197,10 @@ projects = [
     auto_sync = true
     # Optional: extra namespaces allowed in the AppProject destinations
     extra_destination_namespaces = ["cnpg-system"]
+    # Optional: extra cluster-scoped resources allowed in the AppProject
+    extra_cluster_resource_whitelist = [
+      { group = "apiextensions.k8s.io", kind = "CustomResourceDefinition" },
+    ]
   }
 ]
 ```
