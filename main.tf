@@ -17,6 +17,7 @@ locals {
     enable_argocd_apps   = var.enable_argocd_apps
     enable_traefik       = var.enable_traefik
     enable_openebs       = var.enable_openebs
+    enable_cert_manager  = var.enable_cert_manager
     argocd_values        = <<EOF
 ${local.argocd_values}
 EOF

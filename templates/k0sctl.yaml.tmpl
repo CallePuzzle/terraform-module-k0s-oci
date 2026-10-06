@@ -23,10 +23,14 @@ spec:
       spec:
         telemetry:
           enabled: false
-        %{ if enable_argocd || enable_traefik || enable_openebs }
+        %{ if enable_argocd || enable_traefik || enable_openebs || enable_cert_manager }
         extensions:
           helm:
             repositories:
+            %{ if enable_cert_manager }
+            - name: jetstack
+              url: https://charts.jetstack.io
+            %{ endif }
             %{ if enable_argocd }
             - name: argo
               url: https://argoproj.github.io/argo-helm
@@ -61,12 +65,24 @@ spec:
                   hostpathClass:
                     isDefaultClass: false
             %{ endif }
+            %{ if enable_cert_manager }
+            - name: cert-manager
+              chartname: jetstack/cert-manager
+              version: "v1.21.2"
+              namespace: cert-manager
+              order: 1
+              values: |
+                crds:
+                  enabled: true
+                prometheus:
+                  enabled: false
+            %{ endif }
             %{ if enable_traefik }
             - name: traefik
               chartname: traefik/traefik
               version: "41.2.0"
               namespace: traefik
-              order: 1
+              order: 2
               values: |
                 ingressClass:
                   name: nginx
@@ -86,13 +102,17 @@ spec:
                   spec:
                     externalIPs:
                       - ${private_ip}
+                ports:
+                  websecure:
+                    tls:
+                      enabled: true
             %{ endif }
             %{ if enable_argocd }
             - name: argo-cd
               chartname: argo/argo-cd
               version: "10.3.2"
               namespace: argocd
-              order: 2
+              order: 3
               values: |
                 ${indent(16, argocd_values)}
             %{ endif }
@@ -101,7 +121,7 @@ spec:
               chartname: argo/argocd-apps
               version: "2.0.5"
               namespace: argocd
-              order: 3
+              order: 4
               values: |
                 applications: %{if length(projects) == 0~}{}%{else}
                   %{for project in projects}

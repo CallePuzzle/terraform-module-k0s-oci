@@ -24,6 +24,12 @@ variable "backend_ip_address" {
   description = "The IP address of the backend"
 }
 
+variable "https_backend_port" {
+  type        = number
+  description = "Port of the backend behind the HTTPS backend-set. 80 when the LB terminates TLS (default); 443 when TLS is terminated in-cluster (passthrough)."
+  default     = 80
+}
+
 variable "certificate" {
   type = object({
     name               = string

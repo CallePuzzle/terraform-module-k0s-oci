@@ -52,7 +52,7 @@ resource "oci_load_balancer_backend" "https" {
   backendset_name  = oci_load_balancer_backend_set.https.name
   ip_address       = var.backend_ip_address
   load_balancer_id = oci_load_balancer_load_balancer.this.id
-  port             = 80
+  port             = var.https_backend_port
 }
 
 resource "oci_load_balancer_backend" "http" {

@@ -91,6 +91,12 @@ variable "enable_openebs" {
   default     = false
 }
 
+variable "enable_cert_manager" {
+  description = "Deploy cert-manager via the extensions.helm chart (https://cert-manager.io/). Installs CRDs; issuers and certificates are managed separately (e.g. via Argo CD)."
+  type        = bool
+  default     = false
+}
+
 variable "argocd_host" {
   description = "The hostname of the ArgoCD server. Required when enable_argocd=true and argocd_values is left empty (default), because the default values deploy an ingress that needs a host."
   type        = string
@@ -163,6 +169,12 @@ variable "certificate" {
   description = "Certificate configuration for the load balancer"
   sensitive   = true
   default     = null
+}
+
+variable "https_backend_port" {
+  type        = number
+  description = "Port of the backend behind the HTTPS backend-set. 80 when the LB terminates TLS (default); 443 when TLS is terminated in-cluster (LB passthrough)."
+  default     = 80
 }
 
 # DEPRECATED: use `certificate` object

@@ -151,9 +151,12 @@ k0sctl apply --disable-telemetry --config k0sctl.yaml
 | `enable_traefik` | Deploy Traefik (ingress controller) | true |
 | `enable_argocd_apps` | Deploy ArgoCD Apps | true |
 | `enable_openebs` | Deploy OpenEBS local storage via extensions.helm | false |
+| `enable_cert_manager` | Deploy cert-manager via extensions.helm (CRDs included) | false |
 | `projects` | List of ArgoCD projects | [] |
 | `argocd_values` | Custom ArgoCD Helm values | {} |
 | `argocd_host` | ArgoCD ingress hostname | null |
+| `certificate` | TLS certificate for the LB listener 443 (null = plain TCP passthrough) | null |
+| `https_backend_port` | Backend port of the HTTPS backend-set (443 when TLS terminates in-cluster) | 80 |
 
 ## Accessing the Cluster
 
