@@ -69,6 +69,30 @@ module "oci-k0s" {
 }
 ```
 
+## TLS termination
+
+The HTTPS listener (443) of the load balancer supports two modes:
+
+- **LB termination (default when `certificate` is set)**: the load balancer
+  terminates TLS with the certificate passed via the `certificate` variable
+  and forwards plain HTTP to the backend on port 80 (`https_backend_port = 80`).
+- **In-cluster termination (passthrough)**: set `certificate = null` (default)
+  and `https_backend_port = 443` so the load balancer forwards raw TCP to the
+  cluster and Traefik terminates TLS. Enable cert-manager to issue and renew
+  certificates automatically:
+
+```hcl
+module "oci-k0s" {
+  # ...
+  enable_cert_manager = true   # cert-manager via k0s extensions.helm (CRDs included)
+  https_backend_port  = 443    # LB passes TLS through to Traefik
+  # certificate = null         # default: no SSL config on the LB listener
+}
+```
+
+`enable_cert_manager` only installs the cert-manager operator (with its CRDs);
+issuers and certificates are managed separately, e.g. via Argo CD (GitOps).
+
 ## Connect to Kubernetes API
 
 [https://docs.k0sproject.io/v1.30.4+k0s.0/FAQ/?h=kubeconfig#how-do-i-connect-to-the-cluster](https://docs.k0sproject.io/v1.30.4+k0s.0/FAQ/?h=kubeconfig#how-do-i-connect-to-the-cluster)

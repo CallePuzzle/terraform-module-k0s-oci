@@ -11,6 +11,7 @@ The module provisions:
 - K0s cluster configuration via `k0sctl`
 - Optional ArgoCD for GitOps deployment management
 - Optional Traefik Ingress Controller
+- Optional cert-manager for automated TLS certificate issuance/renewal
 
 ## Technology Stack
 
@@ -28,6 +29,7 @@ The module provisions:
 - **Ubuntu 24.04**: Base operating system for compute instances
 - **ArgoCD**: Optional GitOps continuous delivery tool (default: enabled)
 - **Traefik**: Optional ingress controller (default: enabled)
+- **cert-manager**: Optional certificate operator via extensions.helm, CRDs included (default: disabled)
 
 ## Project Structure
 
@@ -96,6 +98,11 @@ The following ports are automatically opened in the VCN security list:
 - TCP 9443 (k0s-api) - Internal
 - TCP 8132 (konnectivity) - Internal
 - UDP 4789 (Calico VXLAN) - Internal
+
+### TLS Termination
+Two modes for the HTTPS listener (443) of the load balancer:
+- **LB termination**: pass a `certificate` object; the LB terminates TLS and forwards plain HTTP to `https_backend_port` (default 80).
+- **In-cluster termination (passthrough)**: `certificate = null` (default) + `https_backend_port = 443`; the LB forwards raw TCP and Traefik terminates TLS (`ports.websecure.tls.enabled` in the k0sctl template). With `enable_cert_manager = true`, cert-manager (extensions.helm, CRDs included) issues/renews certificates; issuers and certificates are managed outside this module (e.g. via Argo CD).
 
 ## Usage
 
