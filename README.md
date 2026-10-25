@@ -95,7 +95,7 @@ issuers and certificates are managed separately, e.g. via Argo CD (GitOps).
 
 ## Connect to Kubernetes API
 
-[https://docs.k0sproject.io/v1.30.4+k0s.0/FAQ/?h=kubeconfig#how-do-i-connect-to-the-cluster](https://docs.k0sproject.io/v1.30.4+k0s.0/FAQ/?h=kubeconfig#how-do-i-connect-to-the-cluster)
+[https://docs.k0sproject.io/v1.36.4+k0s.1/FAQ/?h=kubeconfig#how-do-i-connect-to-the-cluster](https://docs.k0sproject.io/v1.36.4+k0s.1/FAQ/?h=kubeconfig#how-do-i-connect-to-the-cluster)
 
 ```bash
 ssh ubuntu@<public_ip>

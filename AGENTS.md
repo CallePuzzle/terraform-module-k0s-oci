@@ -25,7 +25,7 @@ The module provisions:
 - `hashicorp/local` (for generating k0sctl configuration file)
 
 ### Key Technologies
-- **K0s**: Lightweight Kubernetes distribution (default: v1.30.4+k0s.0)
+- **K0s**: Lightweight Kubernetes distribution (default: v1.36.4+k0s.1)
 - **Ubuntu 24.04**: Base operating system for compute instances
 - **ArgoCD**: Optional GitOps continuous delivery tool (default: enabled)
 - **Traefik**: Optional ingress controller (default: enabled)
@@ -152,7 +152,7 @@ k0sctl apply --disable-telemetry --config k0sctl.yaml
 |----------|-------------|---------|
 | `compartment_id` | OCI compartment OCID (required) | - |
 | `ssh_public_key` | Public SSH key for instance access | - |
-| `k0s_version` | K0s version to install | "1.30.4+k0s.0" |
+| `k0s_version` | K0s version to install | "1.36.4+k0s.1" |
 | `k0s_config_path` | Path to generate k0sctl.yaml | null |
 | `enable_argocd` | Deploy ArgoCD | true |
 | `enable_traefik` | Deploy Traefik (ingress controller) | true |
