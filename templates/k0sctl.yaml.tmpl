@@ -64,6 +64,13 @@ spec:
                 localpv-provisioner:
                   hostpathClass:
                     isDefaultClass: false
+                # Single-node cluster: the bundled observability stack (Loki
+                # x3 + distributed MinIO x3 + Alloy) can't schedule there and
+                # MinIO's pinned quay image no longer exists. Disable it.
+                loki:
+                  enabled: false
+                alloy:
+                  enabled: false
             %{ endif }
             %{ if enable_cert_manager }
             - name: cert-manager
