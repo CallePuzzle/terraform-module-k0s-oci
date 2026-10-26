@@ -102,7 +102,7 @@ The following ports are automatically opened in the VCN security list:
 ### TLS Termination
 Two modes for the HTTPS listener (443) of the load balancer:
 - **LB termination**: pass a `certificate` object; the LB terminates TLS and forwards plain HTTP to `https_backend_port` (default 80).
-- **In-cluster termination (passthrough)**: `certificate = null` (default) + `https_backend_port = 443`; the LB forwards raw TCP and Traefik terminates TLS (`ports.websecure.tls.enabled` in the k0sctl template). With `enable_cert_manager = true`, cert-manager (extensions.helm, CRDs included) issues/renews certificates; issuers and certificates are managed outside this module (e.g. via Argo CD).
+- **In-cluster termination (passthrough)**: `certificate = null` (default) + `https_backend_port = 443`; the LB forwards raw TCP and Traefik terminates TLS (`ports.websecure.http.tls.enabled` in the k0sctl template — chart 42.x moved entrypoint TLS under `http.*` and its schema rejects the old `ports.<name>.tls` key). With `enable_cert_manager = true`, cert-manager (extensions.helm, CRDs included) issues/renews certificates; issuers and certificates are managed outside this module (e.g. via Argo CD).
 
 ## Usage
 
@@ -231,6 +231,18 @@ Push commits to `main` following [Conventional Commits](https://www.conventional
 - `feat:` → Minor version bump
 - `fix:` → Patch version bump
 - `BREAKING CHANGE:` → Major version bump
+
+### ⚠️ Never push tags manually
+semantic-release derives the version from commits and creates the git tag
+**and** the GitHub Release itself. If you push a tag by hand (e.g.
+`git push origin main vX.Y.Z`), the workflow finds the tag already associated,
+reports "Found 0 commits since last release", skips the release and the version
+never appears at https://github.com/CallePuzzle/terraform-module-k0s-oci/releases.
+
+If it ever happens: publish the release manually on the existing tag with
+`gh release create vX.Y.Z --target main`, replicating the semantic-release
+notes format (`## [X.Y.Z](compare-link) (date)` + `### Bug Fixes` section with
+commit links), as done for v1.4.3.
 
 ## Code Style Guidelines
 
