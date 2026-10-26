@@ -111,8 +111,13 @@ spec:
                       - ${private_ip}
                 ports:
                   websecure:
-                    tls:
-                      enabled: true
+                    # Chart 42.x: el TLS del entrypoint vive bajo http.* y el
+                    # schema del chart rechaza la clave tls a nivel de puerto
+                    # (fue la causa de que la extensión no instalara Traefik
+                    # nunca: "additional properties 'tls' not allowed").
+                    http:
+                      tls:
+                        enabled: true
             %{ endif }
             %{ if enable_argocd }
             - name: argo-cd
