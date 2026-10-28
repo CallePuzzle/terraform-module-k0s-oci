@@ -57,6 +57,7 @@ By default, the cluster provisions with the following wide-open rules:
 
 - TCP 22 (SSH) from `0.0.0.0/0`
 - TCP 6443 (Kubernetes API) from `0.0.0.0/0`
+- TCP 80/443 on the load balancer from `0.0.0.0/0`
 
 These defaults are convenient for Always Free cloud-shell testing. For any
 non-toy deployment, restrict them via:
@@ -66,6 +67,17 @@ module "oci-k0s" {
   # ...
   ssh_allowed_cidrs = ["203.0.113.0/24"]   # your office / VPN
   api_allowed_cidrs = ["203.0.113.0/24"]
+}
+```
+
+If the load balancer sits behind a proxy/CDN such as Cloudflare, restrict its
+listeners to the proxy's published ranges with `lb_allowed_cidrs`, so nobody
+can reach the origin directly (and, e.g., forge `CF-Connecting-IP`):
+
+```hcl
+module "oci-k0s" {
+  # ...
+  lb_allowed_cidrs = ["173.245.48.0/20", "103.21.244.0/22" /* , ... */]
 }
 ```
 

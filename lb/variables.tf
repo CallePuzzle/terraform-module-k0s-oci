@@ -30,6 +30,12 @@ variable "https_backend_port" {
   default     = 80
 }
 
+variable "allowed_cidrs" {
+  type        = list(string)
+  description = "CIDR blocks allowed to reach the load balancer listeners (TCP 80 and 443)."
+  default     = ["0.0.0.0/0"]
+}
+
 variable "certificate" {
   type = object({
     name               = string
