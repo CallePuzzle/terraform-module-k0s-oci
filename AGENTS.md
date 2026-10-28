@@ -163,6 +163,7 @@ k0sctl apply --disable-telemetry --config k0sctl.yaml
 | `argocd_values` | Custom ArgoCD Helm values | {} |
 | `argocd_host` | ArgoCD ingress hostname | null |
 | `certificate` | TLS certificate for the LB listener 443 (null = plain TCP passthrough) | null |
+| `lb_allowed_cidrs` | CIDRs allowed on the LB listeners 80/443 (e.g. Cloudflare ranges) | ["0.0.0.0/0"] |
 | `https_backend_port` | Backend port of the HTTPS backend-set (443 when TLS terminates in-cluster) | 80 |
 
 ## Accessing the Cluster
@@ -281,6 +282,7 @@ freeform_tags = {
 
 ### Network Security
 - kube-apiserver (6443) is exposed to 0.0.0.0/0 by default
+- LB listeners (80/443) are exposed to 0.0.0.0/0 by default; restrict them with `lb_allowed_cidrs` (e.g. Cloudflare ranges when the LB is behind its proxy)
 - Consider restricting access via `additional_default_securty_list_ingress_rules`
 - UFW and iptables are disabled on instances via `user-data.sh`
 

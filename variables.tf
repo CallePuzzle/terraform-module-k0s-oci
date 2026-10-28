@@ -159,6 +159,12 @@ variable "api_allowed_cidrs" {
   default     = ["0.0.0.0/0"]
 }
 
+variable "lb_allowed_cidrs" {
+  description = "CIDR blocks allowed to reach the load balancer listeners (TCP 80 and 443). Defaults to 0.0.0.0/0; behind a CDN/proxy (e.g. Cloudflare), restrict it to the proxy's published ranges so clients can't bypass it."
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
 variable "certificate" {
   type = object({
     name               = string

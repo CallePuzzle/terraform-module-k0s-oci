@@ -11,6 +11,8 @@ module "lb" {
 
   https_backend_port = var.https_backend_port
 
+  allowed_cidrs = var.lb_allowed_cidrs
+
   certificate_certificate_name   = var.certificate != null ? var.certificate.name : var.certificate_certificate_name
   certificate_public_certificate = var.certificate != null ? var.certificate.public_certificate : var.certificate_public_certificate
   certificate_private_key        = var.certificate != null ? var.certificate.private_key : var.certificate_private_key
