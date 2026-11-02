@@ -298,6 +298,7 @@ freeform_tags = {
 
 ### Network Security
 - SSH (22) and kube-apiserver (6443) are restricted by default to the public IP `/32` of whoever runs terraform (`data "http" "myip"` -> ipv4.icanhazip.com); override with `ssh_allowed_cidrs` / `api_allowed_cidrs`
+- SSH (22) is solely governed by `ssh_allowed_cidrs` since v1.7.2 (the vendored vcn submodule previously injected a hardcoded 0.0.0.0/0 SSH rule; environments applied before this change will see it REMOVED on their next apply, which is the intended lockdown)
 - LB listeners (80/443) are exposed to 0.0.0.0/0 by default; restrict them with `lb_allowed_cidrs` (e.g. Cloudflare ranges when the LB is behind its proxy)
 - Consider restricting access via `additional_default_securty_list_ingress_rules`
 - UFW and iptables are disabled on instances via `user-data.sh`
