@@ -180,7 +180,7 @@ k0sctl apply --disable-telemetry --config k0sctl.yaml
 | `ssh_allowed_cidrs` | CIDRs allowed on SSH (22); null = caller public IP /32 | null |
 | `api_allowed_cidrs` | CIDRs allowed on kube-apiserver (6443); null = caller public IP /32 | null |
 | `lb_allowed_cidrs` | CIDRs allowed on the LB listeners 80/443 (e.g. Cloudflare ranges) | ["0.0.0.0/0"] |
-| `https_backend_port` | Backend port of the HTTPS backend-set (443 when TLS terminates in-cluster) | 80 |
+| `https_backend_port` | Backend port of the HTTPS backend-set (443 when TLS terminates in-cluster; health check probes the same port) | 80 |
 
 ## Accessing the Cluster
 
