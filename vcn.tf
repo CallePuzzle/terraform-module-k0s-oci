@@ -1,9 +1,17 @@
+# Public IP of whoever runs terraform; default source for SSH and kube-apiserver
+data "http" "myip" {
+  url = "https://ipv4.icanhazip.com"
+}
+
 locals {
+  my_ip_cidr        = "${chomp(data.http.myip.response_body)}/32"
+  ssh_allowed_cidrs = var.ssh_allowed_cidrs != null ? var.ssh_allowed_cidrs : [local.my_ip_cidr]
+  api_allowed_cidrs = var.api_allowed_cidrs != null ? var.api_allowed_cidrs : [local.my_ip_cidr]
   subnet_cidr_block = "10.2.0.0/24"
 
   base_security_rules = concat(
     # TCP 22 SSH - parameterized via var.ssh_allowed_cidrs
-    [for cidr in var.ssh_allowed_cidrs : {
+    [for cidr in local.ssh_allowed_cidrs : {
       protocol = "6"
       source   = cidr
       tcp_options = {
@@ -41,7 +49,7 @@ locals {
       udp_options = null
     }],
     # TCP 6443 kube-apiserver - parameterized via var.api_allowed_cidrs
-    [for cidr in var.api_allowed_cidrs : {
+    [for cidr in local.api_allowed_cidrs : {
       protocol    = "6"
       source      = cidr
       tcp_options = { min = 6443, max = 6443 }

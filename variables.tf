@@ -148,15 +148,15 @@ variable "additional_security_list_rules" {
 }
 
 variable "ssh_allowed_cidrs" {
-  description = "CIDR blocks allowed to access the instances via SSH (TCP 22). Defaults to 0.0.0.0/0 for Always Free convenience; restrict this in production."
+  description = "CIDR blocks allowed to access the instances via SSH (TCP 22). Defaults to null = automatically restrict to the public IP (/32) of whoever runs terraform, detected via ipv4.icanhazip.com."
   type        = list(string)
-  default     = ["0.0.0.0/0"]
+  default     = null
 }
 
 variable "api_allowed_cidrs" {
-  description = "CIDR blocks allowed to reach the Kubernetes API server (TCP 6443). Defaults to 0.0.0.0/0 for Always Free convenience; restrict this in production."
+  description = "CIDR blocks allowed to reach the Kubernetes API server (TCP 6443). Defaults to null = automatically restrict to the public IP (/32) of whoever runs terraform, detected via ipv4.icanhazip.com."
   type        = list(string)
-  default     = ["0.0.0.0/0"]
+  default     = null
 }
 
 variable "lb_allowed_cidrs" {

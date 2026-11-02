@@ -23,6 +23,7 @@ The module provisions:
 ### Providers
 - `oracle/oci` >= 6.18.0 (Oracle Cloud Infrastructure provider)
 - `hashicorp/local` (for generating k0sctl configuration file)
+- `hashicorp/http` (to detect the caller public IP)
 
 ### Key Technologies
 - **K0s**: Lightweight Kubernetes distribution (default: v1.36.4+k0s.1)
@@ -163,6 +164,8 @@ k0sctl apply --disable-telemetry --config k0sctl.yaml
 | `argocd_values` | Custom ArgoCD Helm values | {} |
 | `argocd_host` | ArgoCD ingress hostname | null |
 | `certificate` | TLS certificate for the LB listener 443 (null = plain TCP passthrough) | null |
+| `ssh_allowed_cidrs` | CIDRs allowed on SSH (22); null = caller public IP /32 | null |
+| `api_allowed_cidrs` | CIDRs allowed on kube-apiserver (6443); null = caller public IP /32 | null |
 | `lb_allowed_cidrs` | CIDRs allowed on the LB listeners 80/443 (e.g. Cloudflare ranges) | ["0.0.0.0/0"] |
 | `https_backend_port` | Backend port of the HTTPS backend-set (443 when TLS terminates in-cluster) | 80 |
 
@@ -281,7 +284,7 @@ freeform_tags = {
 - Default user: `ubuntu`
 
 ### Network Security
-- kube-apiserver (6443) is exposed to 0.0.0.0/0 by default
+- SSH (22) and kube-apiserver (6443) are restricted by default to the public IP `/32` of whoever runs terraform (`data "http" "myip"` -> ipv4.icanhazip.com); override with `ssh_allowed_cidrs` / `api_allowed_cidrs`
 - LB listeners (80/443) are exposed to 0.0.0.0/0 by default; restrict them with `lb_allowed_cidrs` (e.g. Cloudflare ranges when the LB is behind its proxy)
 - Consider restricting access via `additional_default_securty_list_ingress_rules`
 - UFW and iptables are disabled on instances via `user-data.sh`
