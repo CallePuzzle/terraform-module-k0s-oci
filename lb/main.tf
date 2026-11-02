@@ -29,7 +29,7 @@ resource "oci_load_balancer_backend_set" "https" {
 
   health_checker {
     protocol          = "TCP"
-    port              = 80
+    port              = var.https_backend_port # probes the same port as the backend; variable default is 80, so default behaviour is unchanged
     retries           = 3
     timeout_in_millis = 3000
   }
