@@ -23,7 +23,7 @@ locals {
 }
 
 module "instance" {
-  source = "oracle-terraform-modules/compute-instance/oci"
+  source = "./compute-instance"
 
   for_each = local.instances
 
