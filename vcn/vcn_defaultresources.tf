@@ -25,15 +25,8 @@ resource "oci_core_default_security_list" "restore_default" {
     protocol    = "all"
   }
 
-  ingress_security_rules {
-    // allow all SSH
-    protocol = "6"
-    source   = "0.0.0.0/0"
-    tcp_options {
-      min = 22
-      max = 22
-    }
-  }
+  // SSH (22) is governed exclusively by ssh_allowed_cidrs of the root module
+  // (default: caller public IP /32 since v1.6.0); no global SSH rule is injected here.
 
   ingress_security_rules {
     // allow ICMP for all type 3 code 4
