@@ -53,14 +53,15 @@ k0sctl apply --disable-telemetry --config k0sctl.yaml
 
 ### Network security
 
-By default, the cluster provisions with the following wide-open rules:
+By default, the cluster provisions with the following rules:
 
-- TCP 22 (SSH) from `0.0.0.0/0`
-- TCP 6443 (Kubernetes API) from `0.0.0.0/0`
+- TCP 22 (SSH) from the public IP (`/32`) of whoever runs terraform, detected via `https://ipv4.icanhazip.com`
+- TCP 6443 (Kubernetes API) from that same `/32`
 - TCP 80/443 on the load balancer from `0.0.0.0/0`
 
-These defaults are convenient for Always Free cloud-shell testing. For any
-non-toy deployment, restrict them via:
+Note: if your IP changes, the next `terraform apply` updates the rules. To use
+fixed ranges (office / VPN, CI runners) or to open access explicitly, set
+`ssh_allowed_cidrs` / `api_allowed_cidrs` (`null` = auto-detect):
 
 ```hcl
 module "oci-k0s" {

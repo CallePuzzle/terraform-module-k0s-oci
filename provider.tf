@@ -4,5 +4,9 @@ terraform {
       source  = "oracle/oci"
       version = ">= 9.0.0"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.4"
+    }
   }
 }
