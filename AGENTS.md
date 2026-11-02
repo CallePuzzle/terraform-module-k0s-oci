@@ -62,6 +62,15 @@ The module provisions:
 ├── test/                      # Test/example configuration
 │   └── main.tf                # Example module invocation
 │
+├── compute-instance/          # Compute instance submodule (oracle-terraform-modules/compute-instance v2.4.1 fork)
+│   ├── main.tf                # oci_core_instance (lifecycle.ignore_changes = [metadata, source_details])
+│   ├── variables.tf           # Submodule variables
+│   ├── outputs.tf             # Submodule outputs
+│   ├── volumes.tf             # Block volumes and attachments
+│   ├── versions.tf            # Version constraints
+│   ├── docs/                  # Upstream docs
+│   └── examples/              # Usage examples
+│
 └── vcn/                       # VCN submodule (oracle-terraform-modules/vcn fork)
     ├── vcn.tf                 # VCN resource definition
     ├── vcn_gateways.tf        # Internet/NAT/Service gateways
@@ -104,6 +113,10 @@ The following ports are automatically opened in the VCN security list:
 Two modes for the HTTPS listener (443) of the load balancer:
 - **LB termination**: pass a `certificate` object; the LB terminates TLS and forwards plain HTTP to `https_backend_port` (default 80).
 - **In-cluster termination (passthrough)**: `certificate = null` (default) + `https_backend_port = 443`; the LB forwards raw TCP and Traefik terminates TLS (`ports.websecure.http.tls.enabled` in the k0sctl template — chart 42.x moved entrypoint TLS under `http.*` and its schema rejects the old `ports.<name>.tls` key). With `enable_cert_manager = true`, cert-manager (extensions.helm, CRDs included) issues/renews certificates; issuers and certificates are managed outside this module (e.g. via Argo CD).
+
+## Instance lifecycle
+
+Module updates never replace running instances. The vendored `compute-instance/` submodule sets `lifecycle { ignore_changes = [metadata, source_details] }` on `oci_core_instance`, so changes to `templates/user-data.sh.tmpl` (cloud-init, first boot only) or to the latest Ubuntu image OCID (`data.oci_core_images`) are ignored on existing instances. OS patches are applied inside the guest (unattended-upgrades/apt). An instance is only re-created if you destroy it by hand (`terraform apply -replace=...` / `terraform taint`).
 
 ## Usage
 
@@ -326,6 +339,8 @@ The following files are gitignored:
 This project is licensed under the **GNU General Public License v3.0**.
 
 The VCN submodule contains code derived from [oracle-terraform-modules/terraform-oci-vcn](https://github.com/oracle-terraform-modules/terraform-oci-vcn), licensed under the Universal Permissive License 1.0.
+
+The compute-instance submodule contains code derived from [oracle-terraform-modules/terraform-oci-compute-instance](https://github.com/oracle-terraform-modules/terraform-oci-compute-instance) (v2.4.1), licensed under the Universal Permissive License 1.0. Local change: `lifecycle.ignore_changes = [metadata, source_details]` on `oci_core_instance`.
 
 ## CodeGraph (opencode AI)
 
